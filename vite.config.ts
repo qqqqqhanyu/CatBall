@@ -1,0 +1,10 @@
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  base: "/CatBall/",
+  build: {
+    target: "es2022",
+    chunkSizeWarningLimit: 1500,
+  },
+  test: { include: ["tests/unit/**/*.test.ts"] },
+});

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in imagegen",
+  "date": "2026-10-16",
+  "prompt": "Use case: identity-preserve. Create a new transparent sprite atlas for CatBall, based on the provided six-character idle atlas as identity and pixel-art reference. Output 3 columns by 2 rows, matching exactly the reference character order: top left white cat with GRAY OUTER EARS and ALL GRAY TAIL and blue eyes (ALL other fur white, no gray face patch); top middle pure-white cat with green eyes; top right gray tabby with gold eyes; bottom left Siamese with cream fur, dark-brown face/ears/tail and blue eyes; bottom middle gray poodle with SHORT STUBBY TAIL; bottom right fluffy ragdoll with blue eyes. Preserve their exact navy outlines, blue and white school tracksuits, blue backpacks, white and blue sneakers, cute proportions and pixel shading. This is one atlas of six single KICK action poses, not a mockup. Each faces slightly to viewer RIGHT, balances on the planted left leg, with the right leg visibly extended high forward/right in a confident kick. Full body, entire kicking foot and tail within own cell. Separate every sprite by ample transparent padding, equal display height and stable planted-foot baseline. No new accessories, no balls or animals, no particles, no motion lines, no text, no ground, no shadows, no background glow. Actual clean transparent background. Desired canvas1536x1024 with equal512x512 cells. Do not output idle poses: all six must visibly extend one leg. Use the supplied art as reference only, preserving identity/style while creating the new action pose.",
+  "reference": "Art/generated/characters-idle-v3.png",
+  "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-7f6868f0-b193-47fd-b6ed-ca4d904b70f2.png",
+  "asset": "Art/generated/characters-kick-v1.png",
+  "delivery": "public/assets/art/characters-kick-v1.webp"
+}

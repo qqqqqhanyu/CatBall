@@ -1,0 +1,81 @@
+import { test, expect, type Page } from "@playwright/test";
+import type { Session } from "../../src/systems/Session";
+
+type Snapshot = ReturnType<Session["snapshot"]>;
+const snapshot = (page: Page) => page.evaluate(() => (window as unknown as { __catball: { snapshot(): Snapshot } }).__catball.snapshot());
+
+test("a real survival round moves throwers, fires, loses hearts, freezes, ends and restarts cleanly", async ({ page }) => {
+  test.setTimeout(45_000);
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  // Seed 43 naturally produces spread, giant and normal shots in its first round.
+  await page.goto("./?seed=43");
+  await page.getByRole("button", { name: "开始游戏" }).click();
+  await expect(page.locator("#app")).toHaveAttribute("data-phase", "countdown");
+  const countdown = await snapshot(page);
+  await page.waitForTimeout(250);
+  const waiting = await snapshot(page);
+  expect(waiting.throwers).toEqual(countdown.throwers);
+  expect(waiting.projectiles).toEqual([]);
+  expect(waiting.elapsed).toBe(0);
+  await expect(page.locator("#app")).toHaveAttribute("data-phase", "playing");
+  const initial = await snapshot(page);
+  await expect.poll(async () => (await snapshot(page)).throwers[0].position).not.toEqual(initial.throwers[0].position);
+  await expect.poll(async () => page.evaluate(() => (window as unknown as { __catball: { animation(): { opponents: { state: string }[] } } }).__catball.animation().opponents.every((pet) => pet.state === "walk"))).toBe(true);
+  await expect.poll(async () => (await snapshot(page)).projectiles.length, { timeout: 7000 }).toBeGreaterThan(0);
+  const live = await snapshot(page);
+  const seenTypes = new Set(live.projectiles.map((ball) => ball.type));
+  expect(live.projectiles.every((ball) => live.opponents.includes(ball.ownerCharacterId))).toBe(true);
+  await page.getByRole("button", { name: "暂停游戏" }).click();
+  const paused = await snapshot(page);
+  await page.waitForTimeout(350);
+  expect(await snapshot(page)).toEqual(paused);
+  await page.getByRole("button", { name: "继续游戏" }).click();
+  await expect.poll(async () => (await snapshot(page)).health, { timeout: 6000, intervals: [50, 100] }).toBe(2);
+  await expect(page.locator(".hearts")).toHaveAttribute("aria-label", "生命 2 / 3");
+  await expect(page.locator(".hearts .lost")).toHaveCount(1);
+  await page.getByRole("button", { name: "暂停游戏" }).click();
+  const hurt = await snapshot(page);
+  expect(hurt.hurtRemaining).toBeGreaterThan(0);
+  expect(hurt.opponents).toContain(hurt.lastHit!.ownerCharacterId);
+  await page.waitForTimeout(250);
+  expect(await snapshot(page)).toEqual(hurt);
+  await page.getByRole("button", { name: "继续游戏" }).click();
+  await expect.poll(async () => {
+    const current = await snapshot(page);
+    current.projectiles.forEach((ball) => seenTypes.add(ball.type));
+    return current.phase;
+  }, { timeout: 20000, intervals: [100] }).toBe("GAME_OVER");
+  expect([...seenTypes].sort()).toEqual(["GIANT", "NORMAL", "SPREAD"]);
+  await expect(page.getByRole("dialog", { name: "GAME OVER" })).toBeVisible();
+  const finished = await snapshot(page);
+  expect(finished.health).toBe(0);
+  expect(finished.hitCount).toBe(3);
+  expect(finished.score).toBe(Math.floor(finished.elapsed) * 10);
+  await expect(page.locator("#result-score")).toHaveText(String(finished.score));
+  await expect(page.locator(".hearts .lost")).toHaveCount(3);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("catball.records.v1")!));
+  expect(saved).toEqual({ survivalSeconds: finished.elapsed, score: finished.score });
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("ArrowRight");
+  await page.waitForTimeout(250);
+  expect(await snapshot(page)).toEqual(finished);
+  for (const selector of ["#retry-game", "#result-menu"]) {
+    const box = (await page.locator(selector).boundingBox())!;
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  }
+  await page.getByRole("button", { name: "再来一次" }).click();
+  await expect(page.locator("#app")).toHaveAttribute("data-phase", "countdown");
+  const restarted = await snapshot(page);
+  expect(restarted.health).toBe(3);
+  expect(restarted.projectiles).toEqual([]);
+  expect(restarted.elapsed).toBe(0);
+  expect(restarted.score).toBe(0);
+  expect(restarted.attacksFired).toBe(0);
+  await expect(page.locator("#phaser-host canvas")).toHaveCount(1);
+  await page.getByRole("button", { name: "暂停游戏" }).click();
+  await page.getByRole("button", { name: "返回选人" }).click();
+  await expect(page.getByRole("radio")).toHaveCount(6);
+  expect(errors).toEqual([]);
+});

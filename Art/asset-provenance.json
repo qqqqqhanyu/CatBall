@@ -1,0 +1,79 @@
+[
+  {
+    "key": "arena-desktop-v2",
+    "transparent_background": false,
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Mockups/catball-field-v1.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Asset type: production game background. Edit the supplied CatBall approved arena mockup into an EMPTY background plate. Preserve its exact school, trees, grass, red track, blue court, white boundary/center lines/circle, camera angle, pixel art, colors and 16:9 composition. Remove ALL five cat/dog characters, their shadows, the yellow selection ring, duck, both balls and their shadows. Reconstruct the unobscured floor underneath. Absolutely no characters, animals, balls, UI, letters or numbers. Keep all court edges exactly in the same positions. Output a clean high quality landscape background.",
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-16aface0-45b4-4a7f-b484-d8c0f61bc990.png"
+  },
+  {
+    "key": "arena-mobile-v2",
+    "transparent_background": false,
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Mockups/catball-mobile-landscape-ui-v1.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Asset type: mobile game empty background plate. Edit supplied approved landscape mobile CatBall mockup. Remove the entire top dark HUD bar (crop away that strip, image should start directly with school and trees); remove joystick, ROLL and KICK buttons, all cats and dogs, all animals and balls, all shadows/rings from those objects. Fill removed control areas with matching grass, preserving surrounding school, trees, track and blue court. Keep this exact approved pixel artwork, perspective, court line placement and vivid colors. Output ONLY the empty environment, panoramic approximately 5:2 ratio. No HUD, no controls, no animals, no text, no balls. Court center, full track and grass at sides must be visible.",
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-b2a95d7d-aa11-449d-8d70-306f83577a8a.png"
+  },
+  {
+    "key": "characters-idle-v2",
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Mockups/catball-field-v1.png",
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/阿福.png"
+    ],
+    "prompt": "Use case: compositing. Asset type: transparent PNG sprite atlas for CatBall game. Extract/recreate SIX idle full-body pixel art school pet sprites matching EXACTLY the pixel sprites in image 1 (not realistic portraits). Layout: precisely 3 equal columns by 2 equal rows in a 1536x1024 transparent canvas, one isolated character centered in each 512x512 cell. All characters same scale, whole body and tail visible, standing front with slight three quarter angle. The sprite silhouette occupies about 340 pixels high in each cell; feet at 85% of each cell height. Row1 left = silver-white blue-eyed cat center player from image1; row1 middle = pure white green eyed cat from top of image1; row1 right = grey tabby yellow-eyed cat from left of image1. Row2 left = cream Siamese blue eyed dark mask cat from right of image1; row2 middle = grey curly floppy-eared poodle from bottom of image1; row2 right = fluffy white/brownpatch blue eyed ragdoll cat using image2 identity translated to same pixel style. All wear same blue-white school jacket, blue shorts, blue-white shoes and backpack. Chunky cute large heads, detailed readable pixel clusters, navy outlines. NO volleyball, no props held, no writing, no panels, no ground shadows, no grid lines, no labels. Genuine transparent alpha background.",
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-59052831-e2aa-4d41-b10c-3e9983f1febd.png"
+  },
+  {
+    "key": "heroes-a-v2",
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/坚果.png",
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/元宵.png",
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/球球.png"
+    ],
+    "prompt": "Use case: background-extraction. Asset type: three transparent full-body character cutouts for CatBall selection screen. Extract the LARGE MAIN standing pose from each source sheet, retaining original realistic fluffy fur, identity, eyes, body, costume, bag straps, volleyball and shoes. Preserve original pose of each character rather than drawing a new pose. Image1 silver-white blue-eyed 坚果 at LEFT, image2 white green-eyed 元宵 at CENTER, image3 gray tabby 球球 at RIGHT. Output a single wide transparent atlas, 1536x1024, 3 equal 512px-wide columns, one character centered per column, full body occupies about 900px height and fits entirely inside own column. Feet baseline 960px. Preserve shirt markings. Remove all sheet background, text annotations, decorative flourishes and other poses. No ground, shadows, labels or frames. Do not substitute the small front-view thumbnail for main original pose. Genuine transparent background.",
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-c49c28d5-2996-4c6e-b726-7fa3d17403c2.png"
+  },
+  {
+    "key": "heroes-b-v2",
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/赛赛.png",
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/欢欢.png",
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Image/阿福.png"
+    ],
+    "prompt": "Use case: background-extraction. Asset type: three transparent full-body character cutouts for CatBall selection screen. Extract the LARGE MAIN standing pose from each source sheet, retaining original realistic fluffy fur, identity, eyes, body, costume, bag straps, volleyball and shoes. Preserve original pose of each character rather than drawing a new pose. Image1 cream Siamese darkmask blueeyed 赛赛 at LEFT, image2 graycurly poodle 欢欢 at CENTER, image3 fluffy white/brownpatch blueeyed ragdoll 阿福 at RIGHT. Output a single wide transparent atlas, 1536x1024, 3 equal 512px-wide columns, one character centered per column, full body occupies about 900px height and fits entirely inside own column. Feet baseline 960px. Preserve shirt markings. Remove all sheet background, text annotations, decorative flourishes and other poses. No ground, shadows, labels or frames. Do not substitute the small front-view thumbnail for main original pose. Genuine transparent background.",
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-edf4d377-2874-4b20-9301-ad15e2219a8b.png"
+  },
+  {
+    "key": "heroes-a-v3",
+    "prompt": "Use case: precise-object-edit. Correct this transparent 3-character atlas for use in a game. Keep exactly the same three characters, details, faces, costumes and poses. CRITICAL: each character must fit ENTIRELY inside its own third of the image, with at least 45 pixels of EMPTY TRANSPARENT padding left AND right inside each 512px column. Scale each complete character down uniformly until it is at most 420px wide and 840px tall. Center each one inside its own equal 512x1024 cell. All feet aligned at y=930. Final atlas 1536x1024, exactly 3 columns, genuine transparent background. No foot, hand, fur, tail or prop may touch a cell boundary; do not crop off any part. Preserve full body. Remove any background shadow/halo. Image is intended to be split precisely at x512 and x1024, so these boundaries MUST be entirely transparent at every height.",
+    "referenced_image_paths": [
+      "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-c49c28d5-2996-4c6e-b726-7fa3d17403c2.png"
+    ],
+    "transparent_background": true,
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-22b3367b-2d40-4bda-913b-99ebf55aad78.png"
+  },
+  {
+    "key": "heroes-b-v3",
+    "prompt": "Use case: precise-object-edit. Correct this transparent 3-character atlas for use in a game. Keep exactly the same three characters, details, faces, costumes and poses. CRITICAL: each character must fit ENTIRELY inside its own third of the image, with at least 45 pixels of EMPTY TRANSPARENT padding left AND right inside each 512px column. Scale each complete character down uniformly until it is at most 420px wide and 840px tall. Center each one inside its own equal 512x1024 cell. All feet aligned at y=930. Final atlas 1536x1024, exactly 3 columns, genuine transparent background. No foot, hand, fur, tail or prop may touch a cell boundary; do not crop off any part. Preserve full body. Remove any background shadow/halo. Image is intended to be split precisely at x512 and x1024, so these boundaries MUST be entirely transparent at every height.",
+    "referenced_image_paths": [
+      "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-edf4d377-2874-4b20-9301-ad15e2219a8b.png"
+    ],
+    "transparent_background": true,
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-bedcd729-ebf4-48db-bfef-d9dc14df861e.png"
+  },
+  {
+    "key": "logo-v2",
+    "prompt": "Use case: background-extraction. Asset type: transparent game title. Extract ONLY the exact gold pixel-art CatBall title at top center of supplied approved selection mockup, together with its dark navy extruded outline, the small gold paw at each side, and the navy ribbon immediately below containing white Chinese text 校园躲避球. Preserve all these shapes, colors, spelling, typography and chunky pixel stepped edges exactly. Remove ALL school, trees, grass, red track, sky, interface panels and characters. Transparent alpha background. Output a tight wide landscape 3:1 transparent image with entire logo and both paws visible, approximately 10% transparent padding. No new elements or text. Do not leave any rectangular opaque background behind the logo.",
+    "referenced_image_paths": [
+      "/Users/qhanyu/Desktop/Hanyu Qian/Game/CatBall/Sample/Select.png"
+    ],
+    "transparent_background": true,
+    "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-830bc945-865b-4658-8edb-9887d9b69990.png"
+  }
+]

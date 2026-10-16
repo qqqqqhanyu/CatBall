@@ -1,0 +1,13 @@
+{
+  "tool": "built-in imagegen",
+  "date": "2026-10-16",
+  "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art sprite atlas for the existing CatBall web game. The attached first image is an IDENTITY REFERENCE for the brown tusked boar and cream yellow duck (not an edit target); the second image is a STYLE REFERENCE for the game's pixel animals and characters. Generate ONE new atlas, true transparent alpha background, no ground or shadows, no text, no labels, no UI. Preserve natural animal anatomy: boar on four legs, duck on two orange webbed feet, neither dressed nor anthropomorphic. Cheerful readable pixel art with crisp stepped dark navy/brown outlines, controlled colors and highlights, matching the game's sprite artwork. Not photorealistic.\nLayout EXACTLY 4 columns and 3 rows of equal square cells on a 2048x1536 canvas (each cell 512x512). Every sprite isolated entirely inside its own cell with at least 60 pixels blank margin. Feet aligned to y=440 within each cell; stable scale/center across animation frames, face to viewer's RIGHT in three-quarter view.\nRow 1: same cream/yellow duck with blue eyes, orange beak and webbed feet, 4 distinct sequential running frames; alternating legs and slightly alternating wings; rounded adorable body.\nRow 2: same chestnut brown wild boar, pink snout, two small ivory tusks, four short legs and little tail, 4 distinct sequential running frames, alternating fore/hind feet. Same body size across row.\nRow 3: cell 1 one small orange pumpkin with green stalk (health pickup). Cell 2 one sealed slim blue-and-cream cat treat squeeze pouch with tiny fish emblem, no letters (invincibility pickup). Cell 3 and cell 4 EMPTY transparent.\nThe atlas is consumed as sprites: no grid lines, no checkerboard painted into background, no extraneous effects between cells, no captions. Strong silhouette at small game size.",
+  "references": [
+    "Image/冲刺动物.png",
+    "Sample/Kick.png"
+  ],
+  "source": "/Users/qhanyu/.codex/generated_images/01a14217-b50d-7f11-ad09-70278867ed3f/exec-2863074f-5df0-4ece-805d-028c8235cc24.png",
+  "asset": "Art/generated/animals-items-v1.png",
+  "delivery": "public/assets/art/animals-items-v1.webp",
+  "note": "Generated atlas has 1448×1086 pixels and true alpha; preserved without editing/resampling. Runtime atlas frames select the individual sprites."
+}
