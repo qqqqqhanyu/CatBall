@@ -9,14 +9,22 @@ async function start(page: Page) {
 }
 async function withinViewport(page: Page, selectors: string[]) {
   const viewport = page.viewportSize()!;
-  for (const selector of selectors) {
-    for (const element of await page.locator(selector).all()) {
-      await expect(element).toBeVisible();
-      const box = (await element.boundingBox())!;
-      expect(box.x, selector).toBeGreaterThanOrEqual(-1);
-      expect(box.y, selector).toBeGreaterThanOrEqual(-1);
-      expect(box.x + box.width, selector).toBeLessThanOrEqual(viewport.width + 1);
-      expect(box.y + box.height, selector).toBeLessThanOrEqual(viewport.height + 1);
+  // Read a single layout snapshot instead of dozens of remote round trips while
+  // the live game continues rendering on a slow CI worker.
+  const groups = await page.evaluate((selectors) => selectors.map((selector) => ({
+    selector,
+    boxes: [...document.querySelectorAll<HTMLElement>(selector)].map((element) => {
+      const box = element.getBoundingClientRect();
+      return { x: box.x, y: box.y, width: box.width, height: box.height,
+        visible: element.getClientRects().length > 0 && getComputedStyle(element).visibility !== "hidden" };
+    }),
+  })), selectors);
+  for (const { selector, boxes } of groups) {
+    expect(boxes.length, selector).toBeGreaterThan(0);
+    for (const box of boxes) {
+      expect(box.visible, selector).toBe(true); expect(box.width, selector).toBeGreaterThan(0); expect(box.height, selector).toBeGreaterThan(0);
+      expect(box.x, selector).toBeGreaterThanOrEqual(-1); expect(box.y, selector).toBeGreaterThanOrEqual(-1);
+      expect(box.x + box.width, selector).toBeLessThanOrEqual(viewport.width + 1); expect(box.y + box.height, selector).toBeLessThanOrEqual(viewport.height + 1);
     }
   }
 }

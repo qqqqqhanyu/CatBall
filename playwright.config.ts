@@ -7,8 +7,9 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
   fullyParallel: false,
-  // Real-time WebGL rounds share the host GPU; keep animation timing stable on CI/laptops.
-  workers: 2,
+  // GitHub runners render WebGL on CPU. Concurrent rounds starve each other's
+  // game clock; run one at a time there, while local GPU machines can use two.
+  workers: process.env.CI ? 1 : 2,
   expect: { timeout: 10_000 },
   use: {
     baseURL: "http://127.0.0.1:5173/CatBall/",
