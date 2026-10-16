@@ -30,9 +30,15 @@ test("Kick removes either animal, shows five original expressions, freezes, shoc
   test.setTimeout(40_000);
   const errors: string[] = []; page.on("pageerror", (e) => errors.push(e.message));
   for (const type of ["duck", "boar"]) {
-    await start(page, `kick-${type}`);
+    await start(page, `kick-${type}`, true);
     const stop = observeKick(page, true);
-    await page.getByRole("button", { name: "Kick 踢击" }).click();
+    // Resume and activate through the normal accessible button handler at a
+    // known rendered frame, before the nearby animal has time to hit the player.
+    await page.evaluate(async () => {
+      document.querySelector<HTMLButtonElement>("#resume-game")!.click();
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      document.querySelector<HTMLButtonElement>(".skill.kick")!.click();
+    });
     await stop;
     await expect(page.locator("#app")).toHaveAttribute("data-phase", "paused");
     const kicked = await snapshot(page);
