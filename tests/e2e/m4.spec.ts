@@ -59,7 +59,7 @@ test("Kick removes either animal, shows five original expressions, freezes, shoc
       return s.shockedRemaining > 0 ? { remaining: s.shockedRemaining, visible: !document.querySelector<HTMLElement>("#status-shock")!.hidden } : null;
     });
     await page.getByRole("button", { name: "继续游戏" }).click();
-    const shocked = await (await shock).jsonValue();
+    const shocked = (await (await shock).jsonValue())!;
     expect(shocked.remaining).toBeGreaterThan(2.5); expect(shocked.visible).toBe(true);
     // Observe the state, rendered furball and DOM in one frame: Roll lasts only 450ms.
     const rolling = page.waitForFunction(() => {
@@ -109,7 +109,7 @@ test("a held movement finger resumes after Kick hit-stop without needing a new t
   await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y, id: 1 }] });
   await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: x + 35, y, id: 1 }] });
   await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: x + 35, y, id: 1 }, { x: k.x + k.width / 2, y: k.y + k.height / 2, id: 2 }] });
-  const frozen = await (await stop).jsonValue();
+  const frozen = (await (await stop).jsonValue())!;
   expect(frozen.kickCount).toBe(1);
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [{ x: k.x + k.width / 2, y: k.y + k.height / 2, id: 2 }] });
   // Do not add a wall-time delay here: slow automation can outlast the 500ms stop.
