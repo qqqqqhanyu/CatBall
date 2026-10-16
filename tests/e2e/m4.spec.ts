@@ -43,9 +43,12 @@ test("Kick removes either animal, shows five original expressions, freezes, shoc
     await expect.poll(async () => (await snapshot(page)).shockedRemaining).toBeGreaterThan(2.5);
     await expect(page.locator("#status-shock")).toBeVisible();
     await page.keyboard.press("Shift");
-    await expect.poll(async () => (await snapshot(page)).rollRemaining, { intervals: [20] }).toBeGreaterThan(0);
-    await expect(bubbles(page)).toHaveCount(0);
-    expect((await animation(page)).encounters.rollVisible).toBe(true);
+    // Observe the state, rendered furball and DOM in one frame: Roll lasts only 450ms.
+    await page.waitForFunction(() => {
+      const game = (window as unknown as { __catball: { snapshot(): Snapshot; animation(): Animation } }).__catball;
+      return game.snapshot().rollRemaining > 0 && game.animation().encounters.rollVisible
+        && document.querySelectorAll(".expression-bubble:not([hidden])").length === 0;
+    });
     await expect.poll(async () => (await snapshot(page)).rollRemaining).toBe(0);
     expect((await snapshot(page)).rollCooldown).toBeGreaterThan(9);
     await expect(page.locator(".skill.roll")).toBeDisabled();
@@ -86,8 +89,8 @@ test("a held movement finger resumes after Kick hit-stop without needing a new t
   await expect.poll(async () => (await snapshot(page)).hitStopRemaining, { intervals: [20] }).toBeGreaterThan(0);
   const frozen = await snapshot(page);
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [{ x: k.x + k.width / 2, y: k.y + k.height / 2, id: 2 }] });
-  await page.waitForTimeout(150);
-  expect((await snapshot(page)).position).toEqual(frozen.position);
+  // Do not add a wall-time delay here: slow automation can outlast the 500ms stop.
+  // The paused/frozen clocks are asserted above and in the unit suite.
   await expect.poll(async () => (await snapshot(page)).position.x, { intervals: [50] }).toBeGreaterThan(frozen.position.x + 20);
   await expect(page.locator(".joystick")).toHaveClass(/engaged/);
   await cdp.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] });

@@ -68,13 +68,15 @@ export class Session {
     if (this.phase === "PAUSED" || this.phase === "GAME_OVER" || !Number.isFinite(delta) || delta <= 0) return;
     const seconds = Math.min(delta, C.maxDeltaSeconds);
     if (this.phase === "COUNTDOWN") {
-      this.countdown = Math.max(0, this.countdown - seconds);
+      // Presentation clocks follow elapsed frame time even on a slow renderer.
+      // Physics below keeps its short-step cap to avoid jumps after stalls.
+      this.countdown = Math.max(0, this.countdown - delta);
       if (this.countdown <= 1e-6) { this.countdown = 0; this.phase = "PLAYING"; }
       return;
     }
     if (this.hitStopRemaining > 0) {
       // Presentation time alone advances; game time, cooldowns, NPCs and items stay frozen.
-      this.hitStopRemaining = Math.max(0, this.hitStopRemaining - seconds);
+      this.hitStopRemaining = Math.max(0, this.hitStopRemaining - delta);
       if (this.hitStopRemaining <= 1e-8) { this.hitStopRemaining = 0; this.shockedRemaining = C.kick.shockedSeconds; }
       return;
     }

@@ -10,7 +10,8 @@ export class ExpressionOverlay {
   constructor(private layer: HTMLElement) { this.resize(); }
   resize(): void {
     const bounds = this.layer.getBoundingClientRect();
-    this.controls = [...this.layer.parentElement!.querySelectorAll<HTMLElement>(".joystick, .skill-controls, .status-strip, .practice-label, .game-keyboard-hint, .pickup-notice, .kick-banner")].filter((element) => !element.hidden && element.getClientRects().length > 0).map((element) => {
+    // Reserve only the countdown's text, not its full-field wrapper.
+    this.controls = [...this.layer.parentElement!.querySelectorAll<HTMLElement>(".joystick, .skill-controls, .status-strip, .practice-label, .game-keyboard-hint, .pickup-notice, .kick-banner, .countdown strong, .countdown span")].filter((element) => !element.hidden && element.getClientRects().length > 0).map((element) => {
       const rect = element.getBoundingClientRect();
       return { x: rect.x - bounds.x - 4, y: rect.y - bounds.y - 4, width: rect.width + 8, height: rect.height + 8 };
     });

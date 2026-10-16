@@ -35,6 +35,17 @@ export default defineConfig({
         deviceScaleFactor: 2,
       },
     },
+    {
+      name: "mobile-webkit",
+      // CDP multi-touch tests are Chromium-only. This suite uses portable input.
+      testMatch: /compatibility\.spec\.ts/,
+      use: {
+        ...devices["iPhone 13"],
+        viewport: { width: 844, height: 390 },
+        screen: { width: 844, height: 390 },
+        deviceScaleFactor: 2,
+      },
+    },
   ],
   webServer: {
     command: "npm run dev -- --port 5173 --strictPort",

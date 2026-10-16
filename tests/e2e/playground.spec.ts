@@ -64,7 +64,7 @@ test("keyboard reaches boundaries; pause, restart and return do not leave old in
 }) => {
   await start(page);
   await page.keyboard.down("ArrowRight");
-  await page.waitForTimeout(2600);
+  await expect.poll(async () => (await snapshot(page)).position.x).toBe(1066);
   await page.keyboard.up("ArrowRight");
   expect((await snapshot(page)).position.x).toBe(1066);
   await page.getByRole("button", { name: "暂停游戏" }).click();
@@ -75,7 +75,7 @@ test("keyboard reaches boundaries; pause, restart and return do not leave old in
   await page.waitForTimeout(150);
   expect((await snapshot(page)).position).toEqual(paused.position);
   await page.keyboard.down("ArrowDown");
-  await page.waitForTimeout(1300);
+  await expect.poll(async () => (await snapshot(page)).position.y).toBe(616);
   await page.keyboard.up("ArrowDown");
   expect((await snapshot(page)).position.y).toBe(616);
   await page.getByRole("button", { name: "暂停游戏" }).click();
@@ -193,8 +193,8 @@ test("all six characters render moving legs, stop on release and freeze the curr
       .toBe("player-walk");
     const frames = await page.evaluate(async () => {
       const seen = new Set<string>();
-      const deadline = performance.now() + 650;
-      while (performance.now() < deadline) {
+      const deadline = performance.now() + 2000;
+      while (performance.now() < deadline && seen.size < 4) {
         const a = (
           window as unknown as {
             __catball: { animation(): { atlasFrame: string | number } };

@@ -1,6 +1,6 @@
 # CatBall · 校园躲避球
 
-手机横屏优先的轻量网页游戏，使用 **Phaser 3 + TypeScript + Vite**。当前已接通 **M0–M4：选人、移动、弹幕、追踪冲刺动物、Kick / Roll、增益与原图表情**。
+手机横屏优先的轻量网页游戏，使用 **Phaser 3 + TypeScript + Vite**。已接通 **M0–M4：选人、移动、弹幕、追踪冲刺动物、Kick / Roll、增益与原图表情**，并补充 **M5 浏览器兼容、历史纪录及边界回归测试**。
 
 实际运行截图：[手机 Kick](docs/previews/m4/mobile-kick.png) · [野猪冲刺](docs/previews/m4/mobile-boar-dash.png) · [猫条无敌](docs/previews/m4/mobile-treat-pickup.png) · [圆球翻滚](docs/previews/m4/mobile-roll.png) · [原图命中表情](docs/previews/m4/mobile-hit.png) · [选人界面](docs/previews/v2/mobile-selection.png)。[M3 / M4 验证记录](docs/M3-M4-validation.md)。
 
@@ -45,7 +45,7 @@ npm run test:e2e # 浏览器集成测试
 
 本地快速验收可加 `&scenario=kick-duck`、`kick-boar`、`dash-duck`、`dash-boar`、`pumpkin` 或 `treat`。这些开发专用场景从 20 秒的预设状态开始，便于立即测试正常技能/拾取交互；并非自然出生时刻，也不会进入生产包。正式游戏仍从 0 秒开始，按规则自然刷新。
 
-本地浏览器测试默认使用已安装的 Google Chrome。也可先运行 `npx playwright install chromium`，再使用 `PLAYWRIGHT_BUNDLED=1 npm run test:e2e`。CI 使用 Playwright 自带 Chromium。
+浏览器测试包含桌面 / 手机 Chromium 和移动 WebKit。先运行 `npx playwright install chromium webkit`，再使用 `PLAYWRIGHT_BUNDLED=1 npm run test:e2e`；不设置该变量时 Chromium 项目使用本机 Google Chrome。CI 安装两个引擎，失败时保留 7 天 trace 和截图。WebKit 的兼容套件覆盖布局、生命周期、技能、纪录及缺失资源；CDP 双指测试只在 Chromium 执行。
 
 ## 操作
 
@@ -125,6 +125,8 @@ tests/e2e/                   选人记忆、多指触控、旋转、重开与真
 
 完整规则在 `Protocol/GAME_SPEC_V1.0.md`，角色规范在 `Protocol/ASSET_GUIDE.md`。第 18 节已按本轮讨论拆分 M0 / M1，并将手机适配前移；原有 Kick 五气泡、被球命中两气泡、Roll 零气泡规则保留。
 
-下一步 **M5**：更多真实手机与 Safari 检查、操控和难度调优、必要的性能修复。当前 M4 一并补齐了所依赖的 M3 技能与动物；历史纪录已在 M2 接通，测试与文档随阶段更新。
+**M5 验证记录**：[测试范围、修复与真机待验项](docs/M5-validation.md)。涵盖 568×320 到 1024×768 的横屏布局、桌面 1440×900、Chromium / WebKit、存储和图片故障回退、晚期难度长局模拟。低帧率下倒计时与 Kick 停顿按真实帧间隔计时，物理步长仍最多 50ms，防止卡顿后突然跳跃；持续低于 20fps 时游戏会慢下来。
+
+浏览器模拟不等同于真实手机。实体 iPhone Safari、Android 双指手感、刘海安全区与长期发热 / 难度体验仍需真机试玩；这些尚未标记通过。当前没有音效。
 
 移动效果录像：[坚果](docs/previews/movement/silver_cat-walk.webm) · [欢欢](docs/previews/movement/poodle-walk.webm)。

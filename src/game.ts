@@ -41,6 +41,8 @@ export function createGame(
     },
     scene: [new GameScene(options)],
     banner: false,
-    fps: { target: 60, smoothStep: true },
+    // Session already caps physics steps. Phaser's smoothing clamps the first 120
+    // frames to 16.7ms, stretching a 3s countdown to 6s on a 30Hz device.
+    fps: { target: 60, smoothStep: false },
   });
 }
