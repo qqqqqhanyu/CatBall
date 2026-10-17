@@ -1137,3 +1137,48 @@ kbd {
   .skill small { font-size: 9px; }
   .kick-banner { font-size: 22px; }
 }
+
+/* v1.1 utilities share the existing cream/navy court UI. */
+.menu-tools, .pause-tools { display: flex; justify-content: center; gap: 8px; }
+.menu-tools button, .pause-tools button {
+  min-height: 36px; padding: 4px 14px; border: 1px solid #7298b9; border-radius: 5px;
+  background: #153e68; color: #fffbee; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.menu-footer { max-width: 100%; }
+.pause-panel { max-height: calc(100dvh - 24px); overflow-y: auto; }
+.how-to-play {
+  padding: 0; width: min(820px, calc(100vw - 40px)); max-width: calc(100vw - 40px);
+  max-height: calc(100dvh - 24px); color: var(--navy); background: var(--cream);
+  border: 3px solid var(--navy); border-radius: 10px; box-shadow: 0 0 0 3px #e6bd65;
+}
+.how-to-play[open] { display: flex; flex-direction: column; }
+.how-to-play::backdrop { background: #08213ec9; backdrop-filter: blur(4px); }
+.guide-header { display: flex; flex: none; justify-content: space-between; align-items: center; padding: 16px 22px; background: #102e55; color: var(--cream); }
+.guide-header span { color: #ffd16b; font-size: 11px; letter-spacing: 0.12em; }
+.guide-header h2 { font-size: 25px; margin-top: 2px; }
+.guide-close { background: #244b76; color: white; border: 1px solid #6488ac; border-radius: 5px; width: 44px; height: 44px; }
+.guide-scroll { padding: 18px 22px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; touch-action: pan-y; }
+.guide-lead { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.guide-grid section { position: relative; background: #f4ecd5; border: 1px solid #d4c7a4; border-radius: 7px; padding: 14px; }
+.guide-number { float: right; font: 900 24px ui-monospace, monospace; color: #b67e21; margin-left: 8px; }
+.guide-grid h3 { font-size: 17px; margin: 0 0 9px; }
+.guide-grid p { font-size: 13px; line-height: 1.7; }
+.guide-grid strong { display: block; font-weight: 650; }
+.guide-grid .guide-key { border-top: 1px solid #d4c7a4; padding-top: 8px; margin-top: 10px; color: #385e80; font-size: 12px; }
+.guide-credit { font-size: 10px; color: #647486; margin-top: 18px; }
+.guide-footer { display: flex; flex: none; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid #d4c7a4; padding: 12px 22px; }
+.guide-footer span { font-size: 12px; color: #58758d; }
+.guide-done { min-width: 110px; min-height: 42px; font-size: 16px; padding: 4px 12px; }
+@media (max-height: 600px) {
+  .guide-header { padding: 8px 16px; }
+  .guide-header h2 { font-size: 21px; }
+  .guide-scroll { padding: 12px 16px; }
+  .guide-footer { padding: 8px 16px; }
+  .menu-footer { gap: 8px; padding: 2px 8px; }
+}
+@media (max-width: 650px) {
+  .guide-grid { grid-template-columns: 1fr; }
+  .guide-footer span { font-size: 10px; }
+  .menu-tools button { padding-inline: 9px; }
+}

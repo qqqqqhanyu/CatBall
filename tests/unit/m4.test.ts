@@ -154,14 +154,37 @@ describe("Roll and overlapping immunity sources", () => {
 });
 
 describe("pickups and their clocks", () => {
-  it("pumpkin heals exactly one, caps at three, and a treat protects on its pickup frame", () => {
-    const s = session(); s.health = 2;
-    for (let i = 0; i < 2; i++) {
+  it("a normal three-HP start benefits from two pumpkins and a new round returns to three", () => {
+    const s = session();
+    expect(s.health).toBe(3);
+    for (const expected of [4, 5]) {
       s.items.item = { type: "PUMPKIN", position: { ...s.position }, remaining: 5 };
-      s.tick(0.05, still); expect(s.health).toBe(3); expect(s.items.item).toBeNull();
+      s.tick(0.05, still);
+      expect(s.health).toBe(expected);
+      expect(s.lastPickup?.healed).toBe(1);
+    }
+    expect(new Session(s.playerId).health).toBe(3);
+  });
+  it("five HP still takes one damage per valid hit and ends exactly at zero", () => {
+    const s = session(); s.health = 5;
+    for (const expected of [4, 3, 2, 1, 0]) {
+      s.hurtRemaining = 0;
+      s.projectiles = [ball(s)];
+      s.tick(0.05, still);
+      expect(s.health).toBe(expected);
+      expect(s.phase).toBe(expected ? "PLAYING" : "GAME_OVER");
+    }
+  });
+  it("pumpkin heals one through five HP, never overfills, and a treat protects on its pickup frame", () => {
+    const s = session(); s.health = 2;
+    for (const health of [3, 4, 5, 5]) {
+      const before = s.health;
+      s.items.item = { type: "PUMPKIN", position: { ...s.position }, remaining: 5 };
+      s.tick(0.05, still); expect(s.health).toBe(health); expect(s.items.item).toBeNull();
+      expect(s.lastPickup?.healed).toBe(health - before);
     }
     s.items.item = { type: "CAT_TREAT", position: { ...s.position }, remaining: 5 }; s.projectiles.push(ball(s));
-    s.tick(0.05, still); expect(s.health).toBe(3); expect(s.hitCount).toBe(0); expect(s.projectiles).toHaveLength(1);
+    s.tick(0.05, still); expect(s.health).toBe(5); expect(s.hitCount).toBe(0); expect(s.projectiles).toHaveLength(1);
   });
   it("spawns one safe item after 20–30s, expires after 10s, and schedules a fresh interval", () => {
     const d = new ItemDirector(seededRandom(3));

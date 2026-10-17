@@ -93,7 +93,7 @@ test("original happy/confident pickup faces, healing and treat timers reach the 
     await page.keyboard.up("ArrowRight");
     await expect(bubbles(page)).toHaveCount(1);
     await expect(page.locator(".hud-portrait")).toHaveAttribute("data-expression", type === "pumpkin" ? "HAPPY" : "CONFIDENT");
-    await expect(page.locator(".hearts")).toHaveAttribute("aria-label", `生命 ${type === "pumpkin" ? 3 : 2} / 3`);
+    await expect(page.locator(".hearts")).toHaveAttribute("aria-label", `生命 ${type === "pumpkin" ? 3 : 2} / 5`);
     if (type === "treat") {
       await expect(page.locator("#status-treat")).toBeVisible();
       expect((await snapshot(page)).isInvulnerable).toBe(true);

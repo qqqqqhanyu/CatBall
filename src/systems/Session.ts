@@ -19,7 +19,7 @@ export class Session {
   position: Vec2 = { x: C.width / 2, y: C.court.y + C.court.height / 2 };
   facing: Vec2 = { x: 0, y: -1 };
   moving = false;
-  health: number = C.maxHealth;
+  health: number = C.initialHealth;
   hurtRemaining = 0;
   treatRemaining = 0;
   rollRemaining = 0;
@@ -32,7 +32,7 @@ export class Session {
   shockedRemaining = 0;
   hitCount = 0;
   lastHit: { source: "BALL" | "ANIMAL"; ownerCharacterId: string | null; projectileId: number | null; at: number } | null = null;
-  lastPickup: { type: ItemType; at: number } | null = null;
+  lastPickup: { type: ItemType; at: number; healed: number } | null = null;
   lastKick: { at: number; success: boolean; direction: Vec2 } | null = null;
   projectiles: Projectile[] = [];
   readonly attacks: AttackDirector;
@@ -129,9 +129,10 @@ export class Session {
     const item = this.items.item;
     if (item && sweptCircleContact(previousPlayer, this.position, item.position, item.position, C.player.radius + C.items.radius) !== null) {
       const type = this.items.take()!;
-      this.lastPickup = { type, at: this.elapsed };
+      const previousHealth = this.health;
       if (type === "PUMPKIN") this.health = Math.min(C.maxHealth, this.health + 1);
       else { this.treatRemaining = C.items.treatSeconds; immuneAtStart = Math.max(immuneAtStart, C.items.treatSeconds); }
+      this.lastPickup = { type, at: this.elapsed, healed: this.health - previousHealth };
       this.expressions.onPickup(type === "PUMPKIN" ? "HAPPY" : "CONFIDENT", this.elapsed);
     }
     this.moveAndCollide(seconds, previousPlayer, previousAnimal, immuneAtStart);

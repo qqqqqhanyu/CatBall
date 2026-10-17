@@ -1,8 +1,18 @@
-# CatBall · 校园躲避球
+# CatBall · 校园躲避球 v1.1
 
 手机横屏优先的轻量网页游戏，使用 **Phaser 3 + TypeScript + Vite**。已接通 **M0–M4：选人、移动、弹幕、追踪冲刺动物、Kick / Roll、增益与原图表情**，并补充 **M5 浏览器兼容、历史纪录及边界回归测试**。
 
 实际运行截图：[手机 Kick](docs/previews/m4/mobile-kick.png) · [野猪冲刺](docs/previews/m4/mobile-boar-dash.png) · [猫条无敌](docs/previews/m4/mobile-treat-pickup.png) · [圆球翻滚](docs/previews/m4/mobile-roll.png) · [原图命中表情](docs/previews/m4/mobile-hit.png) · [选人界面](docs/previews/v2/mobile-selection.png)。[M3 / M4 验证记录](docs/M3-M4-validation.md)。
+
+## v1.1 更新
+
+- 选人页与暂停菜单加入「玩法介绍」：躲球、踢飞鸭子 / 野猪、翻滚、道具及操作。弹窗可滚动，关闭后返回原位置，暂停中查看不会恢复计时。
+- 开局 3 HP、上限 5 HP，五心 HUD 显示空心位；南瓜从 3 → 4 → 5，满血提示「生命已满」，重开仍为 3 HP。
+- 背景音乐来自 `Music/` 的 Arcade Kid（David Renda / Fesliyan Studios）。发布文件截取 60 秒，AAC 96 kbps、约 721 KB，循环播放；原文件保留在仓库，只有压缩副本进入网站。
+- 成功踢飞动物时播放一声原创合成「喵」；空踢、踢球不会触发。Web Audio 生成，无额外下载素材。
+- 音乐在点击开始后播放；暂停、后台、返回选人、Game Over 停止，继续时从原处播放，重开从头播放。选人页 / 暂停菜单的声音开关同时控制音乐和音效，并记住设置。音频失败不影响游戏。
+
+版本规则：[V1.1 规则增补](Protocol/GAME_SPEC_V1.1.md)。验证与实际截图：[V1.1 验证记录](docs/V1.1-validation.md)。音频重新生成（仅素材预处理，macOS）：`python3 scripts/prepare-audio.py`；网页构建直接使用已提交的音频，无需系统转码工具。
 
 ## 本轮可以做什么
 
@@ -14,12 +24,12 @@
 - 四名投球者沿跑道随机顺逆时针移动、绕过四角并保持间距；蓄力 0.5 秒时停下，离手瞬间瞄准玩家。
 - 橙色普通球、青色三射球（±20°）、金色大球（半径 2.5 倍）。球离手后匀速直行，场外移除；最多 24 球，满额时延后发射。
 - 全场共用一个难度调度器：0 / 30 / 60 / 120 / 180 秒进入五个阶段，投球间隔、特殊球概率和球速按规格逐渐提升。
-- 三颗心；每次有效命中扣一颗，受伤闪烁并获得 1.2 秒无敌，期间可以移动。每秒生存 +10 分，0 HP 后冻结整局并展示 Game Over、成绩与本地纪录。
+- 初始 3 颗心、上限 5 颗；每次有效命中扣一颗，受伤闪烁并获得 1.2 秒无敌，期间可以移动。每秒生存 +10 分，0 HP 后冻结整局并展示 Game Over、成绩与本地纪录。
 
 - 鸭子 / 野猪持续追踪，蓄力预警后加速冲刺；无敌时也保持追踪。首次 18–32 秒出现，场内最多一只，只有被 Kick 才消失并安排下一次刷新。
 - Kick 范围 72 世界单位，CD 0.8 秒，成功 +50 分；全场冻结 0.5 秒后，四名投球者震惊 3 秒，移动、投球调度及蓄力速度减半。已飞出的球保持原速。空踢也消耗 CD，不能踢球。
 - Roll 锁定方向翻滚 144 世界单位 / 0.45 秒，CD 10 秒；全程无敌、圆形毛球与残影，全场没有气泡。支持左手持续移动、右手点技能；Kick 定格不会丢失持续按住的摇杆。
-- 南瓜 +1 心、上限 3；猫条无敌 5 秒，重复拾取刷新时长。道具随机等待 20–30 秒，最多一个，10 秒未拾取消失。Roll、受伤保护、猫条分别计时，免疫效果可以并存。
+- 南瓜 +1 心、上限 5；猫条无敌 5 秒，重复拾取刷新时长。道具随机等待 20–30 秒，最多一个，10 秒未拾取消失。Roll、受伤保护、猫条分别计时，免疫效果可以并存。
 - 表情来自六角色原设计图：开场五人专注；Kick 玩家自信、四人惊讶；被球击中时只有玩家惊讶和实际发射者开心（震惊中仍惊讶）；拾南瓜开心、猫条自信。气泡避让标题、角色、来球和控件。
 - HUD 实时显示 HP、时间、分数、踢飞次数、技能冷却、受伤保护、猫条、震惊及动物状态。暂停、后台、竖屏和 Game Over 停止相应游戏计时。
 
@@ -121,12 +131,16 @@ tests/e2e/                   选人记忆、多指触控、旋转、重开与真
 
 站点地址：[CatBall 在线试玩](https://qqqqqhanyu.github.io/CatBall/)。发布状态与日志见 [GitHub Actions](https://github.com/qqqqqhanyu/CatBall/actions/workflows/pages.yml)。后续更新需要先推送代码，再手动运行发布工作流。配置依据 [Vite 官方 GitHub Pages 部署说明](https://vite.dev/guide/static-deploy.html#github-pages)。
 
+## Cloudflare Pages
+
+连接同一 GitHub 仓库的 `main` 分支，框架预设 `None`，构建命令 `npm run build -- --base /`，输出目录 `dist`，根目录留空，环境变量 `NODE_VERSION=22.22.1`。所有美术与音频资源都跟随 Vite 的基础路径；GitHub Pages 继续使用 `/CatBall/`。Cloudflare Git 集成会在推送时自动构建。
+
 ## 后续里程碑
 
 完整规则在 `Protocol/GAME_SPEC_V1.0.md`，角色规范在 `Protocol/ASSET_GUIDE.md`。第 18 节已按本轮讨论拆分 M0 / M1，并将手机适配前移；原有 Kick 五气泡、被球命中两气泡、Roll 零气泡规则保留。
 
 **M5 验证记录**：[测试范围、修复与真机待验项](docs/M5-validation.md)。涵盖 568×320 到 1024×768 的横屏布局、桌面 1440×900、Chromium / WebKit、存储和图片故障回退、晚期难度长局模拟。低帧率下倒计时与 Kick 停顿按真实帧间隔计时，物理步长仍最多 50ms，防止卡顿后突然跳跃；持续低于 20fps 时游戏会慢下来。
 
-浏览器模拟不等同于真实手机。实体 iPhone Safari、Android 双指手感、刘海安全区与长期发热 / 难度体验仍需真机试玩；这些尚未标记通过。当前没有音效。
+浏览器模拟不等同于真实手机。实体 iPhone Safari、Android 双指手感、刘海安全区与长期发热 / 难度体验仍需真机试玩；这些尚未标记通过。v1.1 已加入 60 秒循环背景音乐与成功踢飞动物时的合成猫叫；真机音频仍需试听。
 
 移动效果录像：[坚果](docs/previews/movement/silver_cat-walk.webm) · [欢欢](docs/previews/movement/poodle-walk.webm)。

@@ -66,7 +66,7 @@ describe("long-running late-game stress", () => {
       itemSeen ||= !!s.items.item;
       peakBalls = Math.max(peakBalls, s.projectiles.length);
       if (frame % 60 === 0) {
-        expect(s.health).toBe(3); expect(s.phase).toBe("PLAYING");
+        expect(s.health).toBeGreaterThanOrEqual(3); expect(s.health).toBeLessThanOrEqual(5); expect(s.hitCount).toBe(0); expect(s.phase).toBe("PLAYING");
         expect(s.position.x).toBeGreaterThanOrEqual(C.court.x + C.player.radius);
         expect(s.position.x).toBeLessThanOrEqual(C.court.x + C.court.width - C.player.radius);
         expect(s.position.y).toBeGreaterThanOrEqual(C.court.y + C.player.radius);

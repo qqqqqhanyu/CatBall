@@ -32,8 +32,8 @@ test("a real survival round moves throwers, fires, loses hearts, freezes, ends a
   expect(await snapshot(page)).toEqual(paused);
   await page.getByRole("button", { name: "继续游戏" }).click();
   await expect.poll(async () => (await snapshot(page)).health, { timeout: 6000, intervals: [50, 100] }).toBe(2);
-  await expect(page.locator(".hearts")).toHaveAttribute("aria-label", "生命 2 / 3");
-  await expect(page.locator(".hearts .lost")).toHaveCount(1);
+  await expect(page.locator(".hearts")).toHaveAttribute("aria-label", "生命 2 / 5");
+  await expect(page.locator(".hearts .lost")).toHaveCount(3);
   await page.getByRole("button", { name: "暂停游戏" }).click();
   const hurt = await snapshot(page);
   expect(hurt.hurtRemaining).toBeGreaterThan(0);
@@ -53,7 +53,7 @@ test("a real survival round moves throwers, fires, loses hearts, freezes, ends a
   expect(finished.hitCount).toBe(3);
   expect(finished.score).toBe(Math.floor(finished.elapsed) * 10);
   await expect(page.locator("#result-score")).toHaveText(String(finished.score));
-  await expect(page.locator(".hearts .lost")).toHaveCount(3);
+  await expect(page.locator(".hearts .lost")).toHaveCount(5);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("catball.records.v1")!));
   expect(saved).toEqual({ survivalSeconds: finished.elapsed, score: finished.score });
   await page.keyboard.press("Escape");
