@@ -3,11 +3,11 @@ import type { Session } from "../systems/Session";
 
 /** Local browser QA starting states. Actions, collisions and effects still use normal game logic. */
 export function applyScenario(session: Session, name: string | null): void {
-  if (!name || !/^(kick|dash)-(duck|boar)$|^(pumpkin|treat|pumpkin-full|pumpkin-start)$/.test(name)) return;
+  if (!name || !/^(kick|dash)-(duck|boar)$|^(pumpkin|treat|pumpkin-full|pumpkin-start|pumpkin-near-full)$/.test(name)) return;
   session.elapsed = 20;
   session.countdown = 0.5;
   if (name.startsWith("pumpkin") || name === "treat") {
-    session.health = name === "pumpkin-full" ? 5 : name === "pumpkin-start" ? 3 : 2;
+    session.health = name === "pumpkin-full" ? session.stats.maxHealth : name === "pumpkin-near-full" ? session.stats.maxHealth - 1 : name === "pumpkin-start" ? 3 : 2;
     session.items.item = { type: name.startsWith("pumpkin") ? "PUMPKIN" : "CAT_TREAT", position: { x: session.position.x + 110, y: session.position.y }, remaining: 10 };
   } else {
     const type = name.endsWith("duck") ? "DUCK" : "BOAR";

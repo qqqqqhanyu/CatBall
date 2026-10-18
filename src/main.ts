@@ -1,6 +1,7 @@
 import "./style.css";
 import type Phaser from "phaser";
 import { CHARACTERS, characterArt, characterById } from "./data/characters";
+import { characterStats } from "./data/abilities";
 import { GAME_CONFIG } from "./config/gameConfig";
 import { InputController } from "./systems/InputController";
 import { Session } from "./systems/Session";
@@ -69,7 +70,7 @@ function renderMenu(): void {
     <header class="brand" aria-label="CatBall 校园躲避球"><h1 class="sr-only">CatBall 校园躲避球</h1><img src="${import.meta.env.BASE_URL}assets/art/logo-v2.webp" alt="" /></header>
     <div class="selection-layout">
       <section class="selected-panel panel" aria-label="已选角色"><h2 class="panel-tab">${paw} 已选角色 ${paw}</h2><div class="hero-art" id="hero-art">${characterArt(selected, "body")}</div><div class="hero-caption"><h2 id="hero-name">${selected.name}</h2><span class="school-label" id="hero-school">${selected.school}</span><p id="hero-description">${selected.description}</p></div></section>
-      <section class="roster-panel panel"><h2 class="panel-tab">${paw} 选择你的角色 ${paw}</h2><div class="character-grid" role="radiogroup" aria-label="选择角色">${CHARACTERS.map((character) => `<button type="button" class="character-card ${character.id === selectedId ? "selected" : ""}" data-character="${character.id}" role="radio" aria-checked="${character.id === selectedId}" aria-label="${character.name}，${character.school}" tabindex="${character.id === selectedId ? 0 : -1}"><span class="card-portrait">${characterArt(character)}</span><span class="selection-check" aria-hidden="true">✓</span><span class="card-name">${character.name}</span><span class="card-school">${character.school}</span></button>`).join("")}</div><p class="equal-note">${paw} 角色能力相同，选你喜欢的伙伴 ${paw}</p><button type="button" class="start-button" id="start-game">开始游戏 <span aria-hidden="true">▶</span></button><p class="start-error" role="alert" hidden></p></section>
+      <section class="roster-panel panel"><h2 class="panel-tab">${paw} 选择你的角色 ${paw}</h2><div class="character-grid" role="radiogroup" aria-label="选择角色">${CHARACTERS.map((character) => `<button type="button" class="character-card ${character.id === selectedId ? "selected" : ""}" data-character="${character.id}" role="radio" aria-checked="${character.id === selectedId}" aria-label="${character.name}，${character.school}" tabindex="${character.id === selectedId ? 0 : -1}"><span class="card-portrait">${characterArt(character)}</span><span class="selection-check" aria-hidden="true">✓</span><span class="card-name">${character.name}</span><span class="card-school">${character.school}</span></button>`).join("")}</div><p class="ability-note" id="selected-ability" aria-live="polite">专属被动 · ${characterStats(selected.id).abilityDescription}</p><button type="button" class="start-button" id="start-game">开始游戏 <span aria-hidden="true">▶</span></button><p class="start-error" role="alert" hidden></p></section>
     </div>
     <footer class="menu-footer"><span class="touch-instruction">左手移动 · 右手踢击 / 翻滚</span><span class="keyboard-instruction"><kbd>WASD</kbd> 移动 · <kbd>Space</kbd> 踢击</span><div class="menu-tools"><button type="button" data-help>玩法介绍</button><button type="button" data-sound aria-pressed="true">声音：开</button></div></footer>
   </section>${orientationNotice()}`;
@@ -116,7 +117,7 @@ function renderMenu(): void {
 }
 
 function installUtilities(signal: AbortSignal): void {
-  installHowToPlay(app, signal);
+  installHowToPlay(app, signal, () => session?.playerId ?? selectedId);
   const soundButtons = app.querySelectorAll<HTMLButtonElement>("[data-sound]");
   const update = () => soundButtons.forEach((button) => {
     button.textContent = `声音：${audio.enabled ? "开" : "关"}`;
@@ -142,6 +143,7 @@ function selectCharacter(id: string): void {
   app.querySelector("#hero-name")!.textContent = selected.name;
   app.querySelector("#hero-school")!.textContent = selected.school;
   app.querySelector("#hero-description")!.textContent = selected.description;
+  app.querySelector("#selected-ability")!.textContent = `专属被动 · ${characterStats(selected.id).abilityDescription}`;
 }
 
 async function startGame(): Promise<void> {
@@ -168,7 +170,7 @@ async function startGame(): Promise<void> {
     }
     app.dataset.screen = "game";
     app.innerHTML = `<section class="game-screen">
-      <header class="hud"><div class="hud-player"><span class="hud-portrait" data-expression="FOCUSED">${expressionArt(selectedId, "FOCUSED")}</span><div class="hud-identity"><div class="hud-name"><strong>${selected.name}</strong><small id="hud-expression">专注</small></div><div class="hearts" role="img" aria-label="生命 ${session.health} / ${GAME_CONFIG.maxHealth}">${Array.from({ length: GAME_CONFIG.maxHealth }, (_, i) => i < session!.health ? heart : heart.replace("<svg ", '<svg class="lost" ')).join("")}</div><span class="sr-only" id="health-status" role="status"></span></div></div><div class="hud-clock"><span>生存时间</span><time id="game-time">00:00</time></div><div class="hud-right"><div class="score"><span>SCORE</span><strong id="game-score">00000</strong></div><button type="button" class="pause-button icon-button" aria-label="暂停游戏">${pauseIcon}</button></div></header>
+      <header class="hud"><div class="hud-player"><span class="hud-portrait" data-expression="FOCUSED">${expressionArt(selectedId, "FOCUSED")}</span><div class="hud-identity"><div class="hud-name"><strong>${selected.name}</strong><small id="hud-expression">专注</small></div><div class="hearts" role="img" aria-label="生命 ${session.health} / ${session.stats.maxHealth}">${Array.from({ length: session.stats.maxHealth }, (_, i) => i < session!.health ? heart : heart.replace("<svg ", '<svg class="lost" ')).join("")}</div><span class="sr-only" id="health-status" role="status"></span></div></div><div class="hud-clock"><span>生存时间</span><time id="game-time">00:00</time></div><div class="hud-right"><div class="score"><span>SCORE</span><strong id="game-score">00000</strong></div><button type="button" class="pause-button icon-button" aria-label="暂停游戏">${pauseIcon}</button></div></header>
       <div class="game-field"><div id="phaser-host"></div><div class="hurt-flash" aria-hidden="true"></div><span class="practice-label" id="difficulty-label">第 1 阶段 · 注意蓄力提示</span>
         <div class="joystick" aria-label="移动摇杆" role="group"><span class="joystick-arrows" aria-hidden="true"><i>▲</i><i>▶</i><i>▼</i><i>◀</i></span><span class="joystick-ring"></span><span class="joystick-knob"></span></div>
         <div class="skill-controls"><button class="skill roll" type="button" disabled aria-label="Roll 翻滚">${roll}<strong>ROLL</strong><small>准备</small></button><button class="skill kick" type="button" disabled aria-label="Kick 踢击">${shoe}<strong>KICK</strong><small>准备</small></button></div>
@@ -255,7 +257,7 @@ function updateHUD(current: Session): void {
   const hearts = app.querySelector<HTMLElement>(".hearts");
   if (hearts && hearts.dataset.health !== String(current.health)) {
     hearts.dataset.health = String(current.health);
-    hearts.setAttribute("aria-label", `生命 ${current.health} / ${GAME_CONFIG.maxHealth}`);
+    hearts.setAttribute("aria-label", `生命 ${current.health} / ${current.stats.maxHealth}`);
     hearts.querySelectorAll("svg").forEach((icon, index) => icon.classList.toggle("lost", index >= current.health));
     app.querySelector("#health-status")!.textContent = `剩余 ${current.health} 颗心`;
   }
@@ -315,7 +317,7 @@ function updateStatusHUD(current: Session): void {
   banner.hidden = !(current.lastKick?.success && (current.hitStopRemaining > 0 || current.elapsed - current.lastKick.at < 0.8));
   const pickup = app.querySelector<HTMLElement>(".pickup-notice")!;
   pickup.hidden = !(current.lastPickup && current.elapsed - current.lastPickup.at < 0.6);
-  if (!pickup.hidden) pickup.textContent = current.lastPickup!.type === "PUMPKIN" ? current.lastPickup!.healed ? "南瓜 +1 ♥" : "生命已满 · 5 ♥" : "猫条 · 无敌 5 秒";
+  if (!pickup.hidden) pickup.textContent = current.lastPickup!.type === "PUMPKIN" ? current.lastPickup!.healed ? "南瓜 +1 ♥" : `生命已满 · ${current.stats.maxHealth} ♥` : `猫条 · 无敌 ${current.stats.treatSeconds} 秒`;
 }
 
 function showResult(current: Session): void {

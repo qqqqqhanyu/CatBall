@@ -39,7 +39,7 @@ export default defineConfig({
     {
       name: "mobile-webkit",
       // CDP multi-touch tests are Chromium-only. This suite uses portable input.
-      testMatch: /(?:compatibility|v1-1)\.spec\.ts/,
+      testMatch: /(?:compatibility|v1-1|abilities)\.spec\.ts/,
       use: {
         ...devices["iPhone 13"],
         viewport: { width: 844, height: 390 },

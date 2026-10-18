@@ -8,8 +8,10 @@ export interface Item { type: ItemType; position: Vec2; remaining: number }
 export class ItemDirector {
   item: Item | null = null;
   spawnRemaining: number;
-  constructor(private random: () => number) { this.spawnRemaining = this.interval(); }
-  private interval(): number { return C.items.spawnSeconds.min + this.random() * (C.items.spawnSeconds.max - C.items.spawnSeconds.min); }
+  constructor(private random: () => number, private spawnSeconds: Readonly<{ min: number; max: number }> = C.items.spawnSeconds) {
+    this.spawnRemaining = this.interval();
+  }
+  private interval(): number { return this.spawnSeconds.min + this.random() * (this.spawnSeconds.max - this.spawnSeconds.min); }
   tick(seconds: number, player: Vec2, animal: Animal | null): void {
     if (this.item) {
       this.item.remaining = Math.max(0, this.item.remaining - seconds);

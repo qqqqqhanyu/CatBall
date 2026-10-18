@@ -1,5 +1,6 @@
 import { GAME_CONFIG as C } from "../config/gameConfig";
 import { CHARACTERS } from "../data/characters";
+import { characterStats, type CharacterStats } from "../data/abilities";
 import { capVector, moveWithinCourt, sweptCircleContact, type Vec2 } from "../utils/geometry";
 import { pickOpponents, seededRandom } from "../utils/random";
 import { AttackDirector, type Projectile } from "./AttackDirector";
@@ -40,6 +41,7 @@ export class Session {
   readonly items: ItemDirector;
   readonly expressions: ExpressionSystem;
   readonly opponents: string[];
+  readonly stats: CharacterStats;
 
   get score(): number { return Math.floor(this.elapsed + 1e-8) * 10 + this.kickCount * C.kick.points; }
   get isInvulnerable(): boolean { return this.rollRemaining > 1e-8 || this.hurtRemaining > 1e-8 || this.treatRemaining > 1e-8; }
@@ -53,6 +55,7 @@ export class Session {
   }
 
   constructor(readonly playerId: string, random: () => number = Math.random) {
+    this.stats = characterStats(playerId);
     this.opponents = pickOpponents(CHARACTERS, playerId, C.thrower.count, random).map((c) => c.id);
     this.attacks = new AttackDirector(this.opponents, random);
     // Derive independent streams from the opening draw without consuming the projectile RNG.
@@ -60,7 +63,7 @@ export class Session {
     let seed = 2166136261;
     for (const character of opening) seed = Math.imul(seed ^ character.charCodeAt(0), 16777619);
     this.animals = new AnimalDirector(seededRandom(seed ^ 0x51a3));
-    this.items = new ItemDirector(seededRandom(seed ^ 0x71b5));
+    this.items = new ItemDirector(seededRandom(seed ^ 0x71b5), this.stats.itemSpawnSeconds);
     this.expressions = new ExpressionSystem(playerId, this.opponents);
   }
 
@@ -77,7 +80,7 @@ export class Session {
     if (this.hitStopRemaining > 0) {
       // Presentation time alone advances; game time, cooldowns, NPCs and items stay frozen.
       this.hitStopRemaining = Math.max(0, this.hitStopRemaining - delta);
-      if (this.hitStopRemaining <= 1e-8) { this.hitStopRemaining = 0; this.shockedRemaining = C.kick.shockedSeconds; }
+      if (this.hitStopRemaining <= 1e-8) { this.hitStopRemaining = 0; this.shockedRemaining = this.stats.shockedSeconds; }
       return;
     }
     const direction = capVector(input);
@@ -86,7 +89,7 @@ export class Session {
       const length = Math.hypot(this.facing.x, this.facing.y) || 1;
       this.rollDirection = { x: this.facing.x / length, y: this.facing.y / length };
       this.rollRemaining = C.roll.durationSeconds;
-      this.rollCooldown = C.roll.cooldownSeconds;
+      this.rollCooldown = this.stats.rollCooldownSeconds;
       this.kickRemaining = 0;
     } else if (!actions.roll && actions.kick && this.rollRemaining <= 1e-8 && this.kickCooldown <= 1e-8) {
       this.kickCooldown = C.kick.cooldownSeconds;
@@ -118,7 +121,7 @@ export class Session {
     const previousPlayer = this.position;
     this.position = rollStep > 0
       ? moveWithinCourt(this.position, this.rollDirection, rollStep, C.roll.distance / C.roll.durationSeconds, C.court, C.player.radius)
-      : moveWithinCourt(this.position, direction, seconds, C.player.speed, C.court, C.player.radius);
+      : moveWithinCourt(this.position, direction, seconds, this.stats.speed, C.court, C.player.radius);
     this.rollRemaining = Math.max(0, this.rollRemaining - seconds);
     if (this.rollRemaining < 1e-8) this.rollRemaining = 0;
     this.moving = Math.hypot(this.position.x - previousPlayer.x, this.position.y - previousPlayer.y) > 0.001;
@@ -130,8 +133,8 @@ export class Session {
     if (item && sweptCircleContact(previousPlayer, this.position, item.position, item.position, C.player.radius + C.items.radius) !== null) {
       const type = this.items.take()!;
       const previousHealth = this.health;
-      if (type === "PUMPKIN") this.health = Math.min(C.maxHealth, this.health + 1);
-      else { this.treatRemaining = C.items.treatSeconds; immuneAtStart = Math.max(immuneAtStart, C.items.treatSeconds); }
+      if (type === "PUMPKIN") this.health = Math.min(this.stats.maxHealth, this.health + 1);
+      else { this.treatRemaining = this.stats.treatSeconds; immuneAtStart = Math.max(immuneAtStart, this.stats.treatSeconds); }
       this.lastPickup = { type, at: this.elapsed, healed: this.health - previousHealth };
       this.expressions.onPickup(type === "PUMPKIN" ? "HAPPY" : "CONFIDENT", this.elapsed);
     }
@@ -182,7 +185,8 @@ export class Session {
   snapshot() {
     return {
       phase: this.phase, countdown: this.countdown, elapsed: this.elapsed, playerId: this.playerId, opponents: [...this.opponents],
-      position: { ...this.position }, facing: { ...this.facing }, health: this.health, score: this.score,
+      position: { ...this.position }, facing: { ...this.facing }, health: this.health, maxHealth: this.stats.maxHealth,
+      stats: { ...this.stats, itemSpawnSeconds: { ...this.stats.itemSpawnSeconds } }, score: this.score,
       hurtRemaining: this.hurtRemaining, treatRemaining: this.treatRemaining, rollRemaining: this.rollRemaining,
       rollCooldown: this.rollCooldown, rollDirection: { ...this.rollDirection }, kickCooldown: this.kickCooldown, kickRemaining: this.kickRemaining,
       kickCount: this.kickCount, hitStopRemaining: this.hitStopRemaining, shockedRemaining: this.shockedRemaining,

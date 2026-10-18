@@ -287,7 +287,7 @@ p {
 .selected .selection-check {
   display: block;
 }
-.equal-note {
+.ability-note {
   display: flex;
   flex: none;
   align-items: center;
@@ -297,7 +297,7 @@ p {
   font-weight: 750;
   white-space: nowrap;
 }
-.equal-note svg {
+.ability-note svg {
   width: 2dvh;
   height: 2dvh;
   fill: #147fce;
@@ -911,11 +911,11 @@ kbd {
   .selection-layout {
     width: 93vw;
   }
-  .equal-note {
+  .ability-note {
     font-size: 8px;
     gap: 5px;
   }
-  .equal-note svg {
+  .ability-note svg {
     display: none;
   }
   .menu-footer {
@@ -1159,6 +1159,15 @@ kbd {
 .guide-close { background: #244b76; color: white; border: 1px solid #6488ac; border-radius: 5px; width: 44px; height: 44px; }
 .guide-scroll { padding: 18px 22px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; touch-action: pan-y; }
 .guide-lead { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.guide-selected { background: #dcecf2; border-left: 4px solid #2688bc; padding: 10px 12px; margin-bottom: 16px; font-size: 14px; line-height: 1.6; }
+.guide-selected small { font-size: 11px; color: #385e80; }
+.guide-passives { margin-top: 18px; }
+.guide-passives h3 { font-size: 17px; margin-bottom: 8px; }
+.guide-passives dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
+.guide-passives dl > div { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 4px; font-size: 12px; }
+.guide-passives .current { background: #dcecf2; }
+.guide-passives dt { flex: none; font-weight: 750; }
+.guide-passives dd { margin: 0; }
 .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .guide-grid section { position: relative; background: #f4ecd5; border: 1px solid #d4c7a4; border-radius: 7px; padding: 14px; }
 .guide-number { float: right; font: 900 24px ui-monospace, monospace; color: #b67e21; margin-left: 8px; }
@@ -1179,6 +1188,7 @@ kbd {
 }
 @media (max-width: 650px) {
   .guide-grid { grid-template-columns: 1fr; }
+  .guide-passives dl { grid-template-columns: 1fr; }
   .guide-footer span { font-size: 10px; }
   .menu-tools button { padding-inline: 9px; }
 }

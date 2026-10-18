@@ -134,15 +134,15 @@ describe("Roll and overlapping immunity sources", () => {
     expect(s.isInvulnerable).toBe(true);
     s.pause(); const state = s.snapshot(); advance(s, 2); expect(s.snapshot()).toEqual(state);
   });
-  it("one immunity expiring does not cancel the others, and repeated treats reset to 5s", () => {
+  it("one immunity expiring does not cancel the others, and Jianguo's repeated treats reset to 8s", () => {
     const s = session(); s.treatRemaining = 3; s.hurtRemaining = 1.2;
     s.tick(0.05, still, { roll: true }); advance(s, 0.5);
     expect(s.rollRemaining).toBe(0); expect(s.isInvulnerable).toBe(true);
     s.projectiles.push(ball(s)); s.tick(0.05, still); expect(s.health).toBe(3);
     s.items.item = { type: "CAT_TREAT", position: { ...s.position }, remaining: 9 };
-    s.tick(0.05, still); expect(s.treatRemaining).toBe(5);
+    s.tick(0.05, still); expect(s.treatRemaining).toBe(8);
     s.items.item = { type: "CAT_TREAT", position: { ...s.position }, remaining: 9 };
-    s.tick(0.05, still); expect(s.treatRemaining).toBe(5);
+    s.tick(0.05, still); expect(s.treatRemaining).toBe(8);
     s.treatRemaining = 0; s.hurtRemaining = 0.8; expect(s.isInvulnerable).toBe(true);
   });
   it("animals keep tracking and moving throughout a player's roll and treat immunity", () => {
